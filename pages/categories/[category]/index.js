@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import Container from '../../../components/Container';
 import CategoriesProducts from '../../../components/CategoriesProducts';
 import Head from 'next/head';
+import Layout from '../../../components/Layout';
 
 
 const CategoryPage = ({ error='', products=[], cat }) => {
@@ -36,6 +37,7 @@ const CategoryPage = ({ error='', products=[], cat }) => {
         </>
     )
 }
+CategoryPage.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
 
 export async function getStaticProps({ params }) {
     const category = params.category; 

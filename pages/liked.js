@@ -3,8 +3,9 @@ import Container from '../components/Container'
 import Image from 'next/image'
 import Link from 'next/link';
 import Head from 'next/head';
+import Layout from '../components/Layout';
 
-const Bag = ({ dataJson, personalJson}) => {
+const Liked = ({ dataJson, personalJson}) => {
     const { categories, products } = dataJson;
     const { myLiked } = personalJson;
   return (
@@ -38,7 +39,10 @@ const Bag = ({ dataJson, personalJson}) => {
   )
 }
 
-export async function getStaticProps() {
+Liked.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
+
+
+export async function getServerSideProps() {
     try {
         const dataResponse = await fetch('http://localhost:3000/api/db/data');
         if(!dataResponse.ok) throw new Error('Products Not Found! Please try again');
@@ -66,4 +70,4 @@ export async function getStaticProps() {
     }
 }
 
-export default Bag
+export default Liked

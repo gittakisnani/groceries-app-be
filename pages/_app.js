@@ -1,15 +1,17 @@
-import Footer from '../components/Footer'
-import Header from '../components/Header'
+import { AuthProvider } from '../context/AuthContext';
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
-  const { categories, products } = pageProps.dataJson;
+  const categories = pageProps?.dataJson?.categories || [];
+  const products = pageProps?.dataJson?.products || [];
+  const getLayout = Component.getLayout || ( page => page )
+  const ComponentPage = <Component {...pageProps} />
   return (
-    <>
-      <Header cats={categories || []} products={products || []} />
-      <Component {...pageProps} />
-      <Footer />
-    </>
+    <main className='h-screen overflow-x-hidden'>
+        <AuthProvider>
+          {getLayout(ComponentPage, products, categories)}
+        </AuthProvider>
+    </main>
   )
 }
 

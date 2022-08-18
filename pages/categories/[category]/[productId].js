@@ -8,6 +8,7 @@ import 'swiper/css';
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay } from 'swiper'
 import Head from 'next/head';
+import Layout from '../../../components/Layout';
 
 const ProductPage = ({ product }) => {
     const router = useRouter();
@@ -28,6 +29,24 @@ const ProductPage = ({ product }) => {
         setLiked(data.myLiked || []);
         setBag(data.myBag || [])
         return data;
+    }
+
+    const handleLike = async (productId) => {
+        //add to db, call getPersonal
+        getPersonal()
+        const isLiked = liked.includes(productId);
+        const newArr = isLiked ? liked.filter(id => id !== productId) : [...liked, productId]
+        const response = await fetch('http://localhost:3000/api/db/personal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ...personal, myLiked: newArr})
+        });
+
+        if(!response.ok) throw new Error('Server Error');
+        const data = await response.json();
+        return data
     }
 
     useEffect(() => {
@@ -121,7 +140,7 @@ const ProductPage = ({ product }) => {
                 <div className='p-10 text-black'>
                     <h3 className='flex justify-between items-center text-black text-xl md:text-2xl after:[""] after:px-10 after:py-0.5 after:bg-black after:absolute after:bottom-0 after:left-0 relative pb-4 '
                     ><span>{product.name}</span>
-                    <span>{product.isLiked ? <AiFillHeart color='#fab529' /> : <AiOutlineHeart color='#fab529' />}</span>
+                    <span className='cursor-pointer text-3xl' onClick={() => handleLike(product.productId)}>{liked.includes(product.productId) ? <AiFillHeart color='#fab529' /> : <AiOutlineHeart color='#fab529' />}</span>
                     </h3>
                     <p className='text-lg font-semibold py-4'>${product.price.toFixed(2)}</p>
                     <p className='w-full text-left leading-7 py-4'>
@@ -156,6 +175,8 @@ const ProductPage = ({ product }) => {
     </div>
   )
 }
+
+ProductPage.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
 
 export async function getStaticProps(context) {
     const { category, productId } = context.params;

@@ -10,13 +10,18 @@ import Slider from '../components/Slider'
 import Category from '../components/Category'
 import Product from '../components/Product'
 import CategoriesProducts from '../components/CategoriesProducts'
-
+import { useRef } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper'
 import 'swiper/css';
+import Layout from '../components/Layout'
+
+
 export default function Home({ error, errMsg, dataJson }) {
   const { products, categories: cats } = dataJson;
   const ContentOptions = ['Shop By Category', 'Deals Today', 'Special Prices', 'Recently Viewed'];
+  const countDown = useRef('06:24:33');
+  countDown.current = `${new Date().getHours()}H`;
   return (
     <div>
       <Head>
@@ -65,7 +70,7 @@ export default function Home({ error, errMsg, dataJson }) {
 
                           <div className='countdown flex items-center gap-2 bg-[#fb532c] px-4 py-2 rounded-lg text-white mx-2 md:ml-32'>
                           <span><BsAlarm /></span>
-                          Expires In 06:25:34
+                          Expires In {countDown.current}
                           </div>
 
                           <div className='flex items-center gap-2 flex-1 justify-end'>
@@ -137,6 +142,9 @@ export default function Home({ error, errMsg, dataJson }) {
     </div>
   )
 }
+
+Home.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
+
 
 export async function getStaticProps() {
   try{

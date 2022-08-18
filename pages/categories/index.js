@@ -4,6 +4,7 @@ import Category from '../../components/Category'
 import Container from '../../components/Container'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
+import Layout from '../../components/Layout'
 
 const Categories = ({ dataJson, error, errMsg }) => {
   const router = useRouter();
@@ -60,6 +61,9 @@ const Categories = ({ dataJson, error, errMsg }) => {
   )
   
 }
+
+Categories.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
+
 
 export async function getStaticProps() {
   try{
