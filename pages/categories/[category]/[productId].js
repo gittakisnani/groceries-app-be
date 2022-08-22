@@ -130,7 +130,7 @@ const ProductPage = () => {
                     <div className='flex items-center justify-center gap-2 mt-4'>
                         {Object.entries(product.previewImg).map(([key, src]) => (
                             <div key={key}>
-                                <Image src={src} alt={product.name} height="70" width="70" />
+                                <Image src={src} alt={product?.name || 'Product'} height="70" width="70" />
                             </div>
                         ))}
                     </div>
