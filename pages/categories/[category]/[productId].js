@@ -84,8 +84,8 @@ const ProductPage = () => {
   return (
     <div className='w-full py-10'>
         <Head>
-            <title>{product.name}</title>
-            <meta name="description" content={product.name} />
+            <title>{product?.name || 'Unknown' }</title>
+            <meta name="description" content={product?.name || 'Unknown' } />
             <link rel="icon" href="/favicon.ico" />
         </Head>
         <Container>
@@ -104,7 +104,7 @@ const ProductPage = () => {
                     </Link>
                     <span className='px-2 translate-y-1'>{'>'}</span>
                     <Link href={`/categories/${category}/${product.productId}`}>
-                        <a className='hover:underline hover:text-slate-600'>{product.name}</a>
+                        <a className='hover:underline hover:text-slate-600'>{product?.name || 'Unknown' }</a>
                     </Link>
                     </p>
                     <div className='w-full p-10 pb-0'>
@@ -118,11 +118,11 @@ const ProductPage = () => {
                         }}
                         >
                             <SwiperSlide>
-                                <Image src={product.mainImg} alt={product.name} width={'600'} height={'700'} />
+                                <Image src={product.mainImg} alt={product?.name || 'Unknown' } width={'600'} height={'700'} />
                             </SwiperSlide>
                             {Object.entries(product.previewImg).map(([key, src]) => (
                                 <SwiperSlide key={key}>
-                                    <Image src={src} alt={product.name} width={'600'} height={'700'} />
+                                    <Image src={src} alt={product?.name || 'Unknown' } width={'600'} height={'700'} />
                                 </SwiperSlide>
                             ))}
                         </Swiper>
@@ -130,7 +130,7 @@ const ProductPage = () => {
                     <div className='flex items-center justify-center gap-2 mt-4'>
                         {Object.entries(product.previewImg).map(([key, src]) => (
                             <div key={key}>
-                                <Image src={src} alt={product?.name || 'Product'} height="70" width="70" />
+                                <Image src={src} alt={product?.name || 'Unknown' } height="70" width="70" />
                             </div>
                         ))}
                     </div>
@@ -138,7 +138,7 @@ const ProductPage = () => {
                 {/* Product desc */}
                 <div className='p-10 text-black'>
                     <h3 className='flex justify-between items-center text-black text-xl md:text-2xl after:[""] after:px-10 after:py-0.5 after:bg-black after:absolute after:bottom-0 after:left-0 relative pb-4 '
-                    ><span>{product.name}</span>
+                    ><span>{product?.name || 'Unknown' }</span>
                     <span className='cursor-pointer text-3xl' onClick={() => handleLike(product.productId)}>{liked.includes(product.productId) ? <AiFillHeart color='#fab529' /> : <AiOutlineHeart color='#fab529' />}</span>
                     </h3>
                     <p className='text-lg font-semibold py-4'>${product.price.toFixed(2)}</p>
