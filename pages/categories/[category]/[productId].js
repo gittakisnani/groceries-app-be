@@ -103,7 +103,7 @@ const ProductPage = () => {
                         <a className='hover:underline hover:text-slate-600'>{decodeURI(category)}</a>
                     </Link>
                     <span className='px-2 translate-y-1'>{'>'}</span>
-                    <Link href={`/categories/${category}/${product.productId}`}>
+                    <Link href={`/categories/${category}/${product?.productId || 0}`}>
                         <a className='hover:underline hover:text-slate-600'>{product?.name || 'Unknown' }</a>
                     </Link>
                     </p>
@@ -139,7 +139,7 @@ const ProductPage = () => {
                 <div className='p-10 text-black'>
                     <h3 className='flex justify-between items-center text-black text-xl md:text-2xl after:[""] after:px-10 after:py-0.5 after:bg-black after:absolute after:bottom-0 after:left-0 relative pb-4 '
                     ><span>{product?.name || 'Unknown' }</span>
-                    <span className='cursor-pointer text-3xl' onClick={() => handleLike(product.productId)}>{liked.includes(product.productId) ? <AiFillHeart color='#fab529' /> : <AiOutlineHeart color='#fab529' />}</span>
+                    <span className='cursor-pointer text-3xl' onClick={() => handleLike(product?.productId || 0)}>{liked.includes(product?.productId || 0) ? <AiFillHeart color='#fab529' /> : <AiOutlineHeart color='#fab529' />}</span>
                     </h3>
                     <p className='text-lg font-semibold py-4'>${product.price.toFixed(2)}</p>
                     <p className='w-full text-left leading-7 py-4'>
@@ -187,7 +187,7 @@ ProductPage.getLayout = (page, products, categories) => (<Layout products={produ
 //             props: {
 //                 error: false,
 //                 dataJson,
-//                 product: dataJson.products.find(product => Number(product.productId) === Number(productId) && product.cat === category),
+//                 product: dataJson.products.find(product => Number(product?.productId || 0) === Number(productId) && product.cat === category),
 //             }
 //         }
 //     } catch(err) {
@@ -206,7 +206,7 @@ ProductPage.getLayout = (page, products, categories) => (<Layout products={produ
 //     const response = await fetch('http://localhost:3000/api/db/data');
 //     const dataJson = await response.json();
 //     const { products } = dataJson;
-//     const paths = products.map(product => ({ params: { "category": product.cat, "productId": product.productId.toString()} }))
+//     const paths = products.map(product => ({ params: { "category": product.cat, "productId": product?.productId || 0.toString()} }))
 
 //     return { paths, fallback: false}
 // }
