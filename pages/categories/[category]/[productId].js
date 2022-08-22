@@ -81,7 +81,7 @@ const ProductPage = () => {
         // return data
     }
 
-  return (
+    if(product) return (
     <div className='w-full py-10'>
         <Head>
             <title>{product?.name || 'Unknown' }</title>
@@ -172,7 +172,8 @@ const ProductPage = () => {
             </div>
         </Container>
     </div>
-  )
+    )
+    return null
 }
 
 ProductPage.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
