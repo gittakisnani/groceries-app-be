@@ -165,7 +165,7 @@ const ProductPage = () => {
                     <div className='py-4'>
                         <button 
                         disabled={!qnt}
-                        onClick={() => handleAddToBag(product.productId)}
+                        onClick={() => handleAddToBag(product?.productId || 0)}
                         className='border disabled:border-[#d1d1d1] disabled:text-[#d1d1d1] disabled:hover:bg-transparent border-[#fab529] hover:border-transparent p-3 text-[#fab529] hover:text-black duration-200 ease-out hover:bg-[#fab529] bg-inherit w-full'>Add to bag</button>
                     </div>
                 </div>
