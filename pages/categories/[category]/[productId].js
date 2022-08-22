@@ -9,10 +9,12 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay } from 'swiper'
 import Head from 'next/head';
 import Layout from '../../../components/Layout';
-
-const ProductPage = ({ product }) => {
+import data from '../../../data/data'
+const ProductPage = () => {
     const router = useRouter();
-    const { category } = router.query;
+    const { category, productId } = router.query;
+    const { products } = data
+    const product = products.find(pr => Number(pr.productId) === Number(productId) && pr.cat === decodeURI(category))
     const [qnt, setQnt] = useState(0);
     const [liked, setLiked] = useState([]);
     const [bag, setBag] = useState([]);
@@ -22,31 +24,28 @@ const ProductPage = ({ product }) => {
 
 
     const getPersonal = async () => {
-        const response = await fetch('http://localhost:3000/api/db/personal');
-        if(!response.ok) throw new Error('Server error');
-        const data = await response.json();
-        setPersonal(data)
-        setLiked(data.myLiked || []);
-        setBag(data.myBag || [])
-        return data;
+        setPersonal(personal)
+        setLiked(personal.myLiked || []);
+        setBag(personal.myBag || [])
+        return personal;
     }
 
-    const handleLike = async (productId) => {
+    const handleLike = (productId) => {
         //add to db, call getPersonal
         getPersonal()
         const isLiked = liked.includes(productId);
         const newArr = isLiked ? liked.filter(id => id !== productId) : [...liked, productId]
-        const response = await fetch('http://localhost:3000/api/db/personal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ...personal, myLiked: newArr})
-        });
+        // const response = await fetch('http://localhost:3000/api/db/personal', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ ...personal, myLiked: newArr})
+        // });
 
-        if(!response.ok) throw new Error('Server Error');
-        const data = await response.json();
-        return data
+        // if(!response.ok) throw new Error('Server Error');
+        // const data = await response.json();
+        // return data
     }
 
     useEffect(() => {
@@ -68,18 +67,18 @@ const ProductPage = ({ product }) => {
         if(!qnt) return;
         getPersonal();
         const newArr = [...bag, ...Array(qnt).fill(productId)]
-        const response = await fetch('http://localhost:3000/api/db/personal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({...personal, myBag: newArr })
-        });
+        // const response = await fetch('http://localhost:3000/api/db/personal', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({...personal, myBag: newArr })
+        // });
 
-        if(!response.ok) throw new Error('Server Error');
-        const data = await response.json();
+        // if(!response.ok) throw new Error('Server Error');
+        // const data = await response.json();
         setQnt(0)
-        return data
+        // return data
     }
 
   return (
@@ -178,38 +177,38 @@ const ProductPage = ({ product }) => {
 
 ProductPage.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
 
-export async function getStaticProps(context) {
-    const { category, productId } = context.params;
-    try{
-        const response = await fetch('http://localhost:3000/api/db/data');
-        if(!response.ok) throw Error('Something Went wrong! please refresh the page or try later.')
-        const dataJson = await response.json();
-        return {
-            props: {
-                error: false,
-                dataJson,
-                product: dataJson.products.find(product => Number(product.productId) === Number(productId) && product.cat === category),
-            }
-        }
-    } catch(err) {
-        console.error(err);
-        return {
-            props: {
-                error: true,
-                errMsg: 'Something Went wrong! please refresh the page or try later.',
-                productId: undefined,
-            }
-        }
-    }
-} 
+// export async function getStaticProps(context) {
+//     const { category, productId } = context.params;
+//     try{
+//         const response = await fetch('http://localhost:3000/api/db/data');
+//         if(!response.ok) throw Error('Something Went wrong! please refresh the page or try later.')
+//         const dataJson = await response.json();
+//         return {
+//             props: {
+//                 error: false,
+//                 dataJson,
+//                 product: dataJson.products.find(product => Number(product.productId) === Number(productId) && product.cat === category),
+//             }
+//         }
+//     } catch(err) {
+//         console.error(err);
+//         return {
+//             props: {
+//                 error: true,
+//                 errMsg: 'Something Went wrong! please refresh the page or try later.',
+//                 productId: undefined,
+//             }
+//         }
+//     }
+// } 
 
-export async function getStaticPaths() {
-    const response = await fetch('http://localhost:3000/api/db/data');
-    const dataJson = await response.json();
-    const { products } = dataJson;
-    const paths = products.map(product => ({ params: { "category": product.cat, "productId": product.productId.toString()} }))
+// export async function getStaticPaths() {
+//     const response = await fetch('http://localhost:3000/api/db/data');
+//     const dataJson = await response.json();
+//     const { products } = dataJson;
+//     const paths = products.map(product => ({ params: { "category": product.cat, "productId": product.productId.toString()} }))
 
-    return { paths, fallback: false}
-}
+//     return { paths, fallback: false}
+// }
 
 export default ProductPage

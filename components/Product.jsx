@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import Image from 'next/dist/client/image'
 import Link from 'next/link'
 import { AiOutlineStar, AiFillStar, AiOutlineMinus, AiOutlinePlus, AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
-
+import personal from '../data/personal'
 
 //When we click the liked button we update the db and call getPersonal
 const Product = ( { product } ) => {
@@ -13,13 +13,10 @@ const Product = ( { product } ) => {
     const [personal, setPersonal] = useState({})
 
     const getPersonal = async () => {
-        const response = await fetch('http://localhost:3000/api/db/personal');
-        if(!response.ok) throw new Error('Server error');
-        const data = await response.json();
-        setPersonal(data)
-        setLiked(data.myLiked || []);
-        setBag(data.myBag || [])
-        return data;
+        setPersonal(personal)
+        setLiked(personal.myLiked || []);
+        setBag(personal.myBag || [])
+        return personal;
     }
 
     useEffect(() => {
@@ -31,37 +28,37 @@ const Product = ( { product } ) => {
         //add to db, call getPersonal
         getPersonal();
         const isLiked = liked.includes(productId);
-        const newArr = isLiked ? liked.filter(id => id !== productId) : [...liked, productId]
-        const response = await fetch('http://localhost:3000/api/db/personal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ...personal, myLiked: newArr})
-        });
+        // const newArr = isLiked ? liked.filter(id => id !== productId) : [...liked, productId]
+        // const response = await fetch('http://localhost:3000/api/db/personal', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ ...personal, myLiked: newArr})
+        // });
 
-        if(!response.ok) throw new Error('Server Error');
-        const data = await response.json();
-        return data
+        // if(!response.ok) throw new Error('Server Error');
+        // const data = await response.json();
+        // return data
     }
 
 
     const handleAddToBag = async (productId) => {
         if(!qnt) return;
         getPersonal();
-        const newArr = [...bag, ...Array(qnt).fill(productId)]
-        const response = await fetch('http://localhost:3000/api/db/personal', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ...personal, myBag: newArr })
-        });
+        // const newArr = [...bag, ...Array(qnt).fill(productId)]
+        // const response = await fetch('http://localhost:3000/api/db/personal', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ ...personal, myBag: newArr })
+        // });
 
-        if(!response.ok) throw new Error('Server Error');
-        const data = await response.json();
+        // if(!response.ok) throw new Error('Server Error');
+        // const data = await response.json();
         setQnt(0)
-        return data
+        // return data
     }
 
 

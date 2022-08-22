@@ -128,9 +128,9 @@ const Footer = () => {
                     <p className=''>Made with 💗 by <span className='text-slate-600 cursor-pointer'>Taki Snani</span></p>
                     <div className='flex  items-center gap-4 text-slate-700'>
                         <a href='https://www.facebook.com' title='Check Facebook' className='cursor-pointer text-lg'><BsFacebook /></a>
-                        <a href='https://wwwt.witter.com' title='Check Twitter' className='cursor-pointer text-lg'><BsTwitter /></a>
-                        <a href='https://www.linkedIn.com' title='Check LinkedIn' className='cursor-pointer text-lg'><BsLinkedin /></a>
-                        <a href='https://www.github.com' title='Check Github' className='cursor-pointer text-lg'><BsGithub /></a>
+                        <a href='https://twitter.com/yestakisnani' title='Check Twitter' className='cursor-pointer text-lg'><BsTwitter /></a>
+                        <a href='https://www.linkedin.com/in/taki-snani-1ba6ba236/' title='Check LinkedIn' className='cursor-pointer text-lg'><BsLinkedin /></a>
+                        <a href='hhttps://github.com/gittakisnani' title='Check Github' className='cursor-pointer text-lg'><BsGithub /></a>
                     </div>
                 </div>
             </Container>

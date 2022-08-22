@@ -4,10 +4,11 @@ import Image from 'next/image'
 import Link from 'next/link';
 import Head from 'next/head';
 import Layout from '../components/Layout';
-
-const Liked = ({ dataJson, personalJson}) => {
-    const { categories, products } = dataJson;
-    const { myLiked } = personalJson;
+import data from '../data/data';
+import personal from '../data/personal';
+const Liked = () => {
+    const { products } = data;
+    const { myLiked } = personal;
   return (
     <>
         <Head>
@@ -42,32 +43,32 @@ const Liked = ({ dataJson, personalJson}) => {
 Liked.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
 
 
-export async function getServerSideProps() {
-    try {
-        const dataResponse = await fetch('http://localhost:3000/api/db/data');
-        if(!dataResponse.ok) throw new Error('Products Not Found! Please try again');
-        const personalResponse = await fetch('http://localhost:3000/api/db/personal')
-        if(!personalResponse.ok) throw new Error('Try Later!')
-        const dataJson = await dataResponse.json();
-        const personalJson = await personalResponse.json();
-        return {
-            props: {
-                error: false,
-                dataJson,
-                personalJson
-            }
-        }
-    } catch(err) {
-        console.error(err);
-        return {
-            props: {
-                error: true,
-                errMsg: err.message,
-                dataJson: null,
-                personalJson: null
-            }
-        }
-    }
-}
+// export async function getServerSideProps() {
+//     try {
+//         const dataResponse = await fetch('http://localhost:3000/api/db/data');
+//         if(!dataResponse.ok) throw new Error('Products Not Found! Please try again');
+//         const personalResponse = await fetch('http://localhost:3000/api/db/personal')
+//         if(!personalResponse.ok) throw new Error('Try Later!')
+//         const dataJson = await dataResponse.json();
+//         const personalJson = await personalResponse.json();
+//         return {
+//             props: {
+//                 error: false,
+//                 dataJson,
+//                 personalJson
+//             }
+//         }
+//     } catch(err) {
+//         console.error(err);
+//         return {
+//             props: {
+//                 error: true,
+//                 errMsg: err.message,
+//                 dataJson: null,
+//                 personalJson: null
+//             }
+//         }
+//     }
+// }
 
 export default Liked

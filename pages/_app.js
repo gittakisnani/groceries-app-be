@@ -1,9 +1,9 @@
 import { AuthProvider } from '../context/AuthContext';
 import '../styles/globals.css'
+import data from '../data/data';
 
 function MyApp({ Component, pageProps }) {
-  const categories = pageProps?.dataJson?.categories || [];
-  const products = pageProps?.dataJson?.products || [];
+  const { products, categories } = data
   const getLayout = Component.getLayout || ( page => page )
   const ComponentPage = <Component {...pageProps} />
   return (

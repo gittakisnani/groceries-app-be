@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import React, { useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
+import data from '../data/data';
 const SearchBar = ({ cats=[] }) => {
     const [category, setCategory] = useState('All');
     const [productText, setProductText] = useState('');
@@ -11,13 +12,7 @@ const SearchBar = ({ cats=[] }) => {
     }
 
     const fetchSearchData = async(category, text) => {
-        try{
-            const response = await fetch('http://localhost:3000/api/db/data');
-            const dataJson = await response.json();
-            setMatchProducts(dataJson.products.filter(product => category === 'All' ? product.name.includes(text) : product.cat === category && product.name.includes(text)))
-        } catch(err) {
-            console.error(err)
-        }
+        setMatchProducts(data.products.filter(product => category === 'All' ? product.name.includes(text) : product.cat === category && product.name.includes(text)))
     }
 
     const handleFetchData = e => {

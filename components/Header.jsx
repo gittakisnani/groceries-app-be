@@ -7,6 +7,7 @@ import SearchBar from './SearchBar'
 import Support from './Support'
 import User from './User'
 import { AiOutlineMenu } from 'react-icons/ai'
+import personal from '../data/personal'
 
 const Header = ({ cats=[], products=[] }) => {
     const [nav, setNav] = useState(false);
@@ -14,9 +15,7 @@ const Header = ({ cats=[], products=[] }) => {
     const handleNav = () => setNav(!nav);
 
     const getBudget = async () => {
-      const response = await fetch('http://localhost:3000/api/db/personal');
-      const dataJson = await response.json();
-      setBudget(dataJson.budget)
+      setBudget(personal.budget)
     }
 
     useEffect(() => {

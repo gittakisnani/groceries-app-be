@@ -15,10 +15,10 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper'
 import 'swiper/css';
 import Layout from '../components/Layout'
+import data from '../data/data'
 
-
-export default function Home({ error, errMsg, dataJson }) {
-  const { products, categories: cats } = dataJson;
+export default function Home() {
+  const { products, categories: cats } = data;
   const ContentOptions = ['Shop By Category', 'Deals Today', 'Special Prices', 'Recently Viewed'];
   const countDown = useRef('06:24:33');
   countDown.current = `${new Date().getHours()}H`;
@@ -51,7 +51,7 @@ export default function Home({ error, errMsg, dataJson }) {
                     </Link>
                   </div>
                 <div className='flex items-center gap-4 max-w-full overflow-hidden py-4'>
-                {!error && !errMsg && cats && cats.map(cat => (
+                {cats && cats.map(cat => (
                       <Category key={cat.catId} cat={cat.cat} />
                 ))}
                 </div>
@@ -144,26 +144,3 @@ export default function Home({ error, errMsg, dataJson }) {
 }
 
 Home.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
-
-
-export async function getStaticProps() {
-  try{
-    const response = await fetch('http://localhost:3000/api/db/data');
-    if(!response.ok) throw Error('Something Went wrong! please refresh the page or try later.')
-    const dataJson = await response.json();
-    return {
-        props: {
-          error: false,
-          dataJson
-        }
-    }
-  } catch(err) {
-    return {
-        props: {
-          error: true,
-          errMsg: 'Something Went wrong! please refresh the page or try later.',
-          dataJson
-        }
-    }
-  }
-}

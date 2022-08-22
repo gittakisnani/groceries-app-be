@@ -5,10 +5,10 @@ import Container from '../../components/Container'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Layout from '../../components/Layout'
-
-const Categories = ({ dataJson, error, errMsg }) => {
+import data from '../../data/data'
+const Categories = () => {
   const router = useRouter();
-  const cats = dataJson?.categories;
+  const {categories: cats} = data;
   const handleRefresh = () => router.reload();
   const handleBack = () => router.replace('/');
   return (
@@ -65,27 +65,27 @@ const Categories = ({ dataJson, error, errMsg }) => {
 Categories.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
 
 
-export async function getStaticProps() {
-  try{
-    const response = await fetch('http://localhost:3000/api/db/data');
-    if(!response.ok) throw Error('Something Went wrong! please refresh the page or try later.')
-    const dataJson = await response.json();
-    return {
-        props: {
-          error: false,
-          dataJson
-        }
-    }
-  } catch(err) {
-    return {
-        props: {
-          error: true,
-          errMsg: 'Something Went wrong! please refresh the page or try later.',
-          dataJson
-        }
-    }
-  }
-}
+// export async function getStaticProps() {
+//   try{
+//     const response = await fetch('http://localhost:3000/api/db/data');
+//     if(!response.ok) throw Error('Something Went wrong! please refresh the page or try later.')
+//     const dataJson = await response.json();
+//     return {
+//         props: {
+//           error: false,
+//           dataJson
+//         }
+//     }
+//   } catch(err) {
+//     return {
+//         props: {
+//           error: true,
+//           errMsg: 'Something Went wrong! please refresh the page or try later.',
+//           dataJson
+//         }
+//     }
+//   }
+// }
 
 
 export default Categories
