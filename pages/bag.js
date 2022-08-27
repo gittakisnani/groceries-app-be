@@ -4,13 +4,13 @@ import Link from 'next/link';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import data from '../data/data'
-import personal from '../data/personal';
+import { GetAuth } from '../context/AuthContext';
 const Bag = () => {
     const { products } = data;
-    const { myBag } = personal;
-    const bagSet = [...new Set(myBag)];
+    const { bag } = GetAuth().auth
+    const bagSet = [...new Set(bag)];
     const count = bagSet.map(id => {
-        const matchLength = myBag.filter(matchId => matchId === id).length;
+        const matchLength = bag.filter(matchId => matchId === id).length;
         return [id, matchLength]
     })
   return (
@@ -22,11 +22,11 @@ const Bag = () => {
         </Head>
         <Container>
             <div className='w-full bg-white'>
-                <p className='py-10'>Added to Bag Products: {myBag.length} Item{myBag.length === 1 ? '': 's'}</p>
+                <p className='py-10'>Added to Bag Products: {bag.length} Item{bag.length === 1 ? '': 's'}</p>
                 <ul className='list-none flex flex-col gap-2 w-full'>
                 {count.map(([id, count]) => {
-                    const productMatch = products.find(({productId}) => productId === id);
-                    return (<li key={id} className='border border-transparent duration-200 flex items-center justify-between hover:border-gray-200 p-2'>
+                    const productMatch = products.find(({productId}) => productId.toString() === id);
+                    if(productMatch) return (<li key={id} className='border border-transparent duration-200 flex items-center justify-between hover:border-gray-200 p-2'>
                             <Link href={`/categories/${productMatch.cat}/${productMatch.productId}`}><span>{productMatch.name}</span></Link>
                             <span>Unit Price: ${productMatch.price.toFixed(2)}</span>
                             <span>{count} Item(s) added to bag</span>
@@ -41,36 +41,5 @@ const Bag = () => {
     </>
   )
 }
-
-// export async function getServerSideProps() {
-//     try {
-//         const dataResponse = await fetch('http://localhost:3000/api/db/data');
-//         if(!dataResponse.ok) throw new Error('Products Not Found! Please try again');
-//         const personalResponse = await fetch('http://localhost:3000/api/db/personal')
-//         if(!personalResponse.ok) throw new Error('Try Later!')
-//         const dataJson = await dataResponse.json();
-//         const personalJson = await personalResponse.json();
-//         return {
-//             props: {
-//                 error: false,
-//                 dataJson,
-//                 personalJson
-//             }
-//         }
-//     } catch(err) {
-//         console.error(err);
-//         return {
-//             props: {
-//                 error: true,
-//                 errMsg: err.message,
-//                 dataJson: null,
-//                 personalJson: null
-//             }
-//         }
-//     }
-// }
-
 Bag.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
-
-
 export default Bag

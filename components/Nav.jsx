@@ -4,9 +4,11 @@ import { CgClose } from 'react-icons/cg';
 import { RiUserLine } from 'react-icons/ri';
 import { AiOutlineHeart, AiOutlineShoppingCart } from 'react-icons/ai'
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 
 const Nav = ({nav, handleNav, cats=[], products=[]}) => {
+    const router = useRouter()
     const [category, setCategory] = useState('All');
     const [productText, setProductText] = useState('');
     const [matchProducts, setMatchProducts]= useState([])
@@ -78,24 +80,18 @@ const Nav = ({nav, handleNav, cats=[], products=[]}) => {
             </div>}
             </div>
             <ul className='list-none flex flex-col py-4 flex-1 justify-center w-full'>
-                <Link href={'/'}>
-                    <li className='w-full py-2 px-4 flex items-center gap-4 cursor-pointer border-b hover:bg-gray-200 ease-in duration-300 my-2'>
+                    <li onClick={() => router.push('/')} className='w-full py-2 px-4 flex items-center gap-4 cursor-pointer border-b hover:bg-gray-200 ease-in duration-300 my-2'>
                             <RiUserLine />
                             <p className='uppercase'>My Profile</p>
                     </li>
-                </Link>
-                <Link href={'/liked'}>
-                    <li className='w-full py-2 px-4 flex items-center gap-4 cursor-pointer border-b hover:bg-gray-200 ease-in duration-300 my-2'>
+                    <li onClick={() => router.push('/liked')} className='w-full py-2 px-4 flex items-center gap-4 cursor-pointer border-b hover:bg-gray-200 ease-in duration-300 my-2'>
                         <AiOutlineHeart />
                         <p className='uppercase'>Liked Items</p>
                     </li>
-                </Link>
-                <Link href={'/bag'}>
-                    <li className='w-full py-2 px-4 flex items-center gap-4 cursor-pointer border-b hover:bg-gray-200 ease-in duration-300 my-2'>
+                    <li onClick={() => router.push('/bag')} className='w-full py-2 px-4 flex items-center gap-4 cursor-pointer border-b hover:bg-gray-200 ease-in duration-300 my-2'>
                         <AiOutlineShoppingCart />
                         <p className='uppercase'>Shopping Cart</p>
                     </li>
-                </Link>
             </ul>
                 <div className='absolute bottom-0 right-0 left-0 p-2 bg-gray-200 flex items-center justify-between'>
                     <h6 className=''>8 800 332 65-66</h6>

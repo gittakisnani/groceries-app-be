@@ -3,10 +3,12 @@ import React, { useState, useRef, useEffect } from 'react'
 import { AiFillGithub } from 'react-icons/ai'
 import { FcGoogle } from 'react-icons/fc'
 import { GiCheckMark } from 'react-icons/gi'
-import { useRouter } from 'next/router'
 import { GetAuth } from '../context/AuthContext';
-import axios from 'axios'
+import { useRouter } from 'next/dist/client/router';
+import axios from './api/axios';
 const LoginPage = () => {
+    const router = useRouter()
+
     const { auth, setAuth } = GetAuth()
     const errRef = useRef()
 
@@ -31,29 +33,30 @@ const LoginPage = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3500/auth', 
-            JSON.stringify({ user: username, pwd }), {
+            const response = await axios.post('/auth', 
+            JSON.stringify({ username, password: pwd }), {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             }
             )
-            const accessToken = response?.data?.accessToken;
-            const roles = response?.data?.roles;
 
-            setAuth({ username, roles, accessToken })
+
+            const { roles, bag, liked, _id } = response?.data
+
+            setAuth({ username, roles, bag, liked, _id })
             setPwd('')
             setUsername('')
+            router.push('/')
         } catch(err) {
             setErr(true);
-            console.log(err)
             if(!err?.response) {
                 setErrMsg('No server response')
             } else if (err?.response?.status === 400 ) {
                 setErrMsg('Missing username or password')
-            } else if (err?.response?.status === 401 && err?.response?.data === 'Unauthorized' ) {
-                setErrMsg('No Such username')
-            } else if (err?.response?.status === 401 && err?.response?.data !== 'Unauthorized' ) {
-                setErrMsg('Wrong Password')
+            } else if (err?.response?.status === 401 && err?.response?.data.message === 'User not found' ) {
+                setErrMsg('User not found')
+            } else if (err?.response?.status === 401 && err?.response?.data.message === 'Password incorrect' ) {
+                setErrMsg('Password incorrect')
             } else {
                 setErrMsg('Login Failed')
             }

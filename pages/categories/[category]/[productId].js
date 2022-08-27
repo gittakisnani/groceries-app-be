@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link';
 import Container from '../../../components/Container';
@@ -10,47 +10,35 @@ import { Autoplay } from 'swiper'
 import Head from 'next/head';
 import Layout from '../../../components/Layout';
 import data from '../../../data/data'
+import { GetAuth } from '../../../context/AuthContext';
+import axios from '../../../components/api/axios';
 const ProductPage = () => {
     const router = useRouter();
     const { category, productId } = router.query;
-    const { products } = data
+    const { products } = data;
+    const { auth, setAuth } = GetAuth()
+    const { liked } = auth
+
+
     const product = products.find(pr => Number(pr.productId) === Number(productId) && pr.cat === decodeURI(category))
     const [qnt, setQnt] = useState(0);
-    const [liked, setLiked] = useState([]);
-    const [bag, setBag] = useState([]);
-    const [personal, setPersonal] = useState({})
+
+
     const handleIncrement = () => setQnt(qnt + 1)
     const handleDecrement = () => setQnt(qnt <= 0 ? qnt : qnt - 1);
 
 
-    const getPersonal = async () => {
-        setPersonal(personal)
-        setLiked(personal.myLiked || []);
-        setBag(personal.myBag || [])
-        return personal;
+
+    const handleLike = async (productId) => {
+        try {
+            const response = await axios.post('/users/likes', 
+            {userId: auth._id, productId});
+
+            setAuth({ ...auth, liked: response?.data?.length ? response.data : [...auth.liked, productId] })
+        } catch(err) {
+            console.error(err)
+        }
     }
-
-    const handleLike = (productId) => {
-        //add to db, call getPersonal
-        getPersonal()
-        const isLiked = liked.includes(productId);
-        const newArr = isLiked ? liked.filter(id => id !== productId) : [...liked, productId]
-        // const response = await fetch('http://localhost:3000/api/db/personal', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ ...personal, myLiked: newArr})
-        // });
-
-        // if(!response.ok) throw new Error('Server Error');
-        // const data = await response.json();
-        // return data
-    }
-
-    useEffect(() => {
-        getPersonal()
-    }, [])
 
     const createRatings = (numOfStars) => {
         const filledArr = []
@@ -65,20 +53,15 @@ const ProductPage = () => {
 
     const handleAddToBag = async (productId) => {
         if(!qnt) return;
-        getPersonal();
-        const newArr = [...bag, ...Array(qnt).fill(productId)]
-        // const response = await fetch('http://localhost:3000/api/db/personal', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({...personal, myBag: newArr })
-        // });
+        try{
+            const response = await axios.post('/users/bag', 
+            {userId: auth._id, productId });
 
-        // if(!response.ok) throw new Error('Server Error');
-        // const data = await response.json();
-        setQnt(0)
-        // return data
+            setAuth({ ...auth, bag: response?.date?.length ? response.data : [...auth.bag, productId] })
+            setQnt(0)
+        } catch(err) {
+            console.error(err)
+        }
     }
 
     if(product) return (
@@ -139,7 +122,7 @@ const ProductPage = () => {
                 <div className='p-10 text-black'>
                     <h3 className='flex justify-between items-center text-black text-xl md:text-2xl after:[""] after:px-10 after:py-0.5 after:bg-black after:absolute after:bottom-0 after:left-0 relative pb-4 '
                     ><span>{product?.name || 'Unknown' }</span>
-                    <span className='cursor-pointer text-3xl' onClick={() => handleLike(product?.productId || 0)}>{liked.includes(product?.productId || 0) ? <AiFillHeart color='#fab529' /> : <AiOutlineHeart color='#fab529' />}</span>
+                    <span className='cursor-pointer text-3xl' onClick={() => handleLike(product?.productId.toString())}>{liked.includes(product?.productId.toString()) ? <AiFillHeart color='#fab529' /> : <AiOutlineHeart color='#fab529' />}</span>
                     </h3>
                     <p className='text-lg font-semibold py-4'>${product.price.toFixed(2)}</p>
                     <p className='w-full text-left leading-7 py-4'>
@@ -165,7 +148,7 @@ const ProductPage = () => {
                     <div className='py-4'>
                         <button 
                         disabled={!qnt}
-                        onClick={() => handleAddToBag(product?.productId || 0)}
+                        onClick={() => handleAddToBag(product?.productId.toString())}
                         className='border disabled:border-[#d1d1d1] disabled:text-[#d1d1d1] disabled:hover:bg-transparent border-[#fab529] hover:border-transparent p-3 text-[#fab529] hover:text-black duration-200 ease-out hover:bg-[#fab529] bg-inherit w-full'>Add to bag</button>
                     </div>
                 </div>
@@ -177,39 +160,4 @@ const ProductPage = () => {
 }
 
 ProductPage.getLayout = (page, products, categories) => (<Layout products={products} cats={categories}>{page}</Layout>)
-
-// export async function getStaticProps(context) {
-//     const { category, productId } = context.params;
-//     try{
-//         const response = await fetch('http://localhost:3000/api/db/data');
-//         if(!response.ok) throw Error('Something Went wrong! please refresh the page or try later.')
-//         const dataJson = await response.json();
-//         return {
-//             props: {
-//                 error: false,
-//                 dataJson,
-//                 product: dataJson.products.find(product => Number(product?.productId || 0) === Number(productId) && product.cat === category),
-//             }
-//         }
-//     } catch(err) {
-//         console.error(err);
-//         return {
-//             props: {
-//                 error: true,
-//                 errMsg: 'Something Went wrong! please refresh the page or try later.',
-//                 productId: undefined,
-//             }
-//         }
-//     }
-// } 
-
-// export async function getStaticPaths() {
-//     const response = await fetch('http://localhost:3000/api/db/data');
-//     const dataJson = await response.json();
-//     const { products } = dataJson;
-//     const paths = products.map(product => ({ params: { "category": product.cat, "productId": product?.productId || 0.toString()} }))
-
-//     return { paths, fallback: false}
-// }
-
 export default ProductPage

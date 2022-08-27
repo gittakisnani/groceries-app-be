@@ -1,64 +1,46 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/dist/client/image'
 import Link from 'next/link'
 import { AiOutlineStar, AiFillStar, AiOutlineMinus, AiOutlinePlus, AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
-import personal from '../data/personal'
-
+import { GetAuth } from '../context/AuthContext'
+import axios from './api/axios'
 //When we click the liked button we update the db and call getPersonal
 const Product = ( { product } ) => {
     //Expect a save
     const [qnt, setQnt] = useState(0);
-    const [liked, setLiked] = useState([]);
-    const [bag, setBag] = useState([]);
-    const [personal, setPersonal] = useState({})
-
-    const getPersonal = async () => {
-        setPersonal(personal)
-        setLiked(personal.myLiked || []);
-        setBag(personal.myBag || [])
-        return personal;
-    }
-
-    useEffect(() => {
-        getPersonal()
-    }, [])
-
+    const { auth, setAuth } = GetAuth()
+    const { liked } = auth;
 
     const handleLike = async (productId) => {
-        //add to db, call getPersonal
-        getPersonal();
-        const isLiked = liked.includes(productId);
-        // const newArr = isLiked ? liked.filter(id => id !== productId) : [...liked, productId]
-        // const response = await fetch('http://localhost:3000/api/db/personal', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ ...personal, myLiked: newArr})
-        // });
+        try {
+            const response = await axios.post('/users/likes', {
+                userId: auth._id,
+                productId
+            })
 
-        // if(!response.ok) throw new Error('Server Error');
-        // const data = await response.json();
-        // return data
+            setAuth({ ...auth, liked: response?.data?.length ?  response?.data : [...auth.liked, productId] })
+
+
+        } catch(err)  {
+            console.error(err);
+        }
     }
 
 
     const handleAddToBag = async (productId) => {
         if(!qnt) return;
-        getPersonal();
-        // const newArr = [...bag, ...Array(qnt).fill(productId)]
-        // const response = await fetch('http://localhost:3000/api/db/personal', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ ...personal, myBag: newArr })
-        // });
+        try {
+            const response = await axios.post('/users/bag', {
+                userId: auth._id,
+                productId
+            })
 
-        // if(!response.ok) throw new Error('Server Error');
-        // const data = await response.json();
-        setQnt(0)
-        // return data
+            setAuth({ ...auth, bag: response?.data?.length ? response.data : [...auth.bag, productId ] })
+
+            setQnt(0)
+        } catch(err)  {
+            console.error(err);
+        }
     }
 
 
@@ -116,22 +98,22 @@ const Product = ( { product } ) => {
                         <div className='add-to-cart w-full'>
                             <button 
                             disabled={!qnt}
-                            onClick={() => handleAddToBag(product.productId)}
+                            onClick={() => handleAddToBag(product.productId.toString())}
                             className='disabled:bg-[#d1d1d1] w-full rounded-md p-3 bg-[#fab529]/90 hover:bg-[#fab529]'>Add to cart</button>
                         </div>
                     </div>
                 </div>
-                {!liked.includes(product.productId) && 
+                {!liked.includes(product.productId.toString()) && 
                 <button 
-                onClick={() => handleLike(product.productId)}
+                onClick={() => handleLike(product.productId.toString())}
                 className='absolute hidden group-hover:block top-4 right-4 bg-transparent text-2xl'>
                      <AiOutlineHeart color='#fab529' />
                 </button>
                 }
 
-                {liked.includes(product.productId) && 
+                {liked.includes(product.productId.toString()) && 
                 <button 
-                onClick={() => handleLike(product.productId)}
+                onClick={() => handleLike(product.productId.toString())}
                 className='absolute hidden group-hover:block top-4 right-4 bg-transparent text-2xl'>
                      <AiFillHeart color='#fab529' />
                 </button>

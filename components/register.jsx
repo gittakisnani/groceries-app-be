@@ -6,7 +6,7 @@ import { FcGoogle } from 'react-icons/fc'
 import { GiCheckMark } from 'react-icons/gi'
 import { useRouter } from 'next/router'
 import { GetAuth } from '../context/AuthContext'
-import axios  from 'axios'
+import axios from './api/axios'
 
 const RegisterPage = () => {
     const router = useRouter();
@@ -39,7 +39,7 @@ const RegisterPage = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3500/register', 
+            const response = await axios.post('/register', 
             JSON.stringify({ user: username, pwd}),
             {
                 headers: { 'Content-Type': 'application/json'},
@@ -58,8 +58,6 @@ const RegisterPage = () => {
             }
 
         }
-        // setAuth({ username, fullName });
-        // router.push('/')
     }
 
     useEffect(() => {
