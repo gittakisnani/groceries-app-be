@@ -11,8 +11,6 @@ import axios from './api/axios';
 const LoginPage = () => {
     const router = useRouter();
 
-    console.log(process.env.NEXT_PUBLIC_API_URL)
-
     const { auth, setAuth } = GetAuth()
     const errRef = useRef()
 
