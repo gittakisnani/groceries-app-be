@@ -4,14 +4,16 @@ import Link from 'next/link'
 import { AiOutlineStar, AiFillStar, AiOutlineMinus, AiOutlinePlus, AiOutlineHeart, AiFillHeart } from 'react-icons/ai'
 import { GetAuth } from '../context/AuthContext'
 import axios from './api/axios'
+import { useRouter } from 'next/router'
 //When we click the liked button we update the db and call getPersonal
 const Product = ( { product } ) => {
-    //Expect a save
+    const router = useRouter()
     const [qnt, setQnt] = useState(0);
     const { auth, setAuth } = GetAuth()
     const { liked } = auth;
 
     const handleLike = async (productId) => {
+        if(!auth.username) return router.push('/login')
         try {
             const response = await axios.post('/users/likes', {
                 userId: auth._id,
@@ -29,6 +31,7 @@ const Product = ( { product } ) => {
 
     const handleAddToBag = async (productId) => {
         if(!qnt) return;
+        if(!auth.username) return router.push('/login')
         try {
             const response = await axios.post('/users/bag', {
                 userId: auth._id,

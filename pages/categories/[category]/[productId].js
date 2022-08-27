@@ -30,6 +30,7 @@ const ProductPage = () => {
 
 
     const handleLike = async (productId) => {
+        if(!auth.username) return router.push('/login')
         try {
             const response = await axios.post('/users/likes', 
             {userId: auth._id, productId});
@@ -53,6 +54,7 @@ const ProductPage = () => {
 
     const handleAddToBag = async (productId) => {
         if(!qnt) return;
+        if(!auth.username) return router.push('/login')
         try{
             const response = await axios.post('/users/bag', 
             {userId: auth._id, productId });

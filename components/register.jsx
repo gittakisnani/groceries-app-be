@@ -34,19 +34,20 @@ const RegisterPage = () => {
 
         if(!username || !fullName || !email || !pwd) {
             setError(true);
-            setErrMsg('All Fields are required');
+            setErrMsg('All Fields required');
             return;
         }
 
         try {
-            const response = await axios.post('/register', 
-            JSON.stringify({ user: username, pwd}),
+            const response = await axios.post('/users', 
+            JSON.stringify({ username, password: pwd, roles: ['User'] }),
             {
                 headers: { 'Content-Type': 'application/json'},
                 withCredentials: true
             }
             );
-            setAuth({ username, fullName })
+
+            router.push('/login')
         } catch(err) {
             setError(true)
             if(!err?.response) {

@@ -4,7 +4,9 @@ import { AiFillGithub } from 'react-icons/ai'
 import { FcGoogle } from 'react-icons/fc'
 import { GiCheckMark } from 'react-icons/gi'
 import { GetAuth } from '../context/AuthContext';
-import { useRouter } from 'next/dist/client/router';
+import { useRouter } from 'next/router';
+
+
 import axios from './api/axios';
 const LoginPage = () => {
     const router = useRouter()

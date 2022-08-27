@@ -1,4 +1,4 @@
-import React from 'react'
+import { useEffect } from 'react'
 import Container from '../components/Container' 
 import Image from 'next/image'
 import Link from 'next/link';
@@ -6,11 +6,19 @@ import Head from 'next/head';
 import Layout from '../components/Layout';
 import data from "../data/data"
 import { GetAuth } from '../context/AuthContext';
+import { useRouter } from 'next/router';
 const Liked = () => {
+    const router = useRouter()
     const { products } = data
-    const { liked } = GetAuth().auth;
-    console.log(liked)
-    console.log(products)
+    const { auth } = GetAuth()
+    const { liked } = auth;
+
+    useEffect(() => {
+        if(!auth?.username) {
+            router.push('/login');
+        }
+    }, [auth?.username, router])
+
   return (
     <>
         <Head>

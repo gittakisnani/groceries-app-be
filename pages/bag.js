@@ -1,18 +1,31 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Container from '../components/Container' 
 import Link from 'next/link';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import data from '../data/data'
 import { GetAuth } from '../context/AuthContext';
+import { useRouter } from 'next/router';
 const Bag = () => {
+    const router = useRouter();
+
     const { products } = data;
-    const { bag } = GetAuth().auth
+    const { auth } = GetAuth()
+    const { bag } = auth
     const bagSet = [...new Set(bag)];
+
+
+    useEffect(() => {
+        if(!auth?.username) router.push('/login')
+    }, [router, auth?.username]);
+
+
     const count = bagSet.map(id => {
         const matchLength = bag.filter(matchId => matchId === id).length;
         return [id, matchLength]
     })
+
+    
   return (
     <>
         <Head>
